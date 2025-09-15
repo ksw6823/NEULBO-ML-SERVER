@@ -205,3 +205,99 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# FastAPI specific
+*.db
+*.sqlite
+*.sqlite3
+app.log
+access.log
+error.log
+uvicorn.log
+fastapi.log
+*.pid
+
+# API documentation
+docs/build/
+openapi.json
+redoc-static.html
+
+# FastAPI uploads and media
+uploads/
+media/
+static/files/
+user_uploads/
+
+# Machine Learning / AI specific
+*.pkl
+*.joblib
+*.model
+*.h5
+*.hdf5
+*.pb
+*.onnx
+*.tflite
+*.pt
+*.pth
+*.safetensors
+models/
+checkpoints/
+weights/
+data/
+datasets/
+logs/
+tensorboard/
+mlruns/
+runs/
+experiments/
+artifacts/
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+Dockerfile.local
+.docker/
+
+# Configuration files (sensitive)
+.env.local
+.env.production
+.env.staging
+config.ini
+settings.ini
+credentials.json
+secrets.json
+
+# Database
+db.sqlite3
+database.db
+*.db-journal
+
+# Temporary API files
+tmp/
+temp/
+cache/
+.cache/
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+coverage.xml
+coverage.html
+test-results/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
