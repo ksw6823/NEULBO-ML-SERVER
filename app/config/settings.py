@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     
     # 서버 설정
     host: str = "0.0.0.0"
-    port: int = 8000
+    port: int = 8001
     
     # 데이터베이스 설정
     database_url: str = Field(
