@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     
     # 데이터베이스 설정
     database_url: str = Field(
-        default="postgresql://postgres:password@localhost:5432/neulbo_db",
+        default="postgresql://neulbo:your_password_here@postgres:5432/neulbodb",
         description="PostgreSQL 데이터베이스 연결 URL"
     )
     database_echo: bool = False  # SQLAlchemy 로깅
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     
     # LLM 설정
     ollama_url: str = Field(
-        default="http://localhost:11434",
+        default="http://neulbo-llm:11434",
         description="OLLAMA 서버 URL"
     )
     llm_model: str = Field(
@@ -55,15 +55,8 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     
-    # CORS 설정
-    allowed_origins: list[str] = ["http://localhost:3000", "http://localhost:8080"]
-    
     # 로깅 설정
     log_level: str = "INFO"
-    
-    # Redis 설정 (캐싱용, 선택사항)
-    redis_url: Optional[str] = None
-    redis_expire_seconds: int = 3600
     
     class Config:
         env_file = ".env"
