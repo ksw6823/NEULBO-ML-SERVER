@@ -1,0 +1,280 @@
+---
+alwaysApply: true
+---
+# Sleep Analysis ML FastAPI Project Rules
+
+You are an expert in Python, FastAPI, ML model deployment, time series processing, and sleep data analysis.
+
+## Core Principles
+- Write concise, technical responses with accurate Python examples
+- Use functional, declarative programming; avoid classes where possible except for Pydantic models
+- Prefer async operations for all I/O-bound tasks (file processing, model inference)
+- Use descriptive variable names with domain-specific context (e.g., `accelerometer_data`, `sleep_stage_predictions`)
+- Use lowercase with underscores for directories and files (e.g., `processors/accelerometer_processor.py`)
+- Follow the RORO pattern for data processing pipelines
+
+## Project Structure
+```
+app/
+├── main.py                     # FastAPI app initialization
+├── routers/
+│   ├── sleep_analysis.py      # Main ML inference endpoints
+│   └── health.py              # Health check endpoints
+├── services/
+│   ├── preprocessor.py        # Data preprocessing logic
+│   ├── model_service.py       # ML model loading and inference
+│   └── postprocessor.py       # Output formatting and stage analysis
+├── models/
+│   ├── request_models.py      # Input validation schemas
+│   ├── response_models.py     # Output response schemas
+│   └── internal_models.py     # Internal data structures
+├── utils/
+│   ├── time_series_utils.py   # Time series processing utilities
+│   ├── sensor_utils.py        # Accelerometer/audio processing
+│   └── validation_utils.py    # Data validation helpers
+├── config/
+│   └── settings.py            # Configuration management
+└── ml_models/                 # Stored ML models (joblib files)
+```
+
+## Domain-Specific Guidelines
+
+### Time Series Data Processing
+- Always validate time series continuity and sampling rates
+- Use pandas for time series operations with proper datetime indexing
+- Implement data quality checks (missing values, outliers, sensor drift)
+- Use numpy for efficient numerical computations on sensor data
+
+```python
+# Example time series validation
+async def validate_sensor_data(
+    accelerometer_data: List[AccelerometerReading],
+    audio_data: List[AudioReading]
+) -> bool:
+    if not accelerometer_data or not audio_data:
+        raise HTTPException(400, "Missing sensor data")
+    
+    # Validate 30-second intervals
+    time_intervals = calculate_intervals(accelerometer_data)
+    if not all(interval <= 30.1 for interval in time_intervals):
+        raise HTTPException(400, "Invalid time intervals")
+    
+    return True
+```
+
+### ML Model Management
+- Load models once at startup using dependency injection
+- Use async model inference to prevent blocking
+- Implement model health checks and fallback strategies
+- Cache preprocessing parameters and model metadata
+
+```python
+# Model service pattern
+class ModelService:
+    def __init__(self):
+        self.sleep_stage_model = None
+        self.preprocessing_params = None
+    
+    async def load_model(self):
+        self.sleep_stage_model = joblib.load('ml_models/sleep_stage_model.joblib')
+        self.preprocessing_params = joblib.load('ml_models/preprocessing_params.joblib')
+    
+    async def predict_sleep_stages(
+        self, 
+        processed_features: np.ndarray
+    ) -> Tuple[List[str], List[Dict[str, float]]]:
+        # Return stages and probabilities
+        pass
+```
+
+### Data Models (Pydantic)
+- Use strict typing for sensor data with validation
+- Implement custom validators for time series consistency
+- Define clear input/output schemas for different sleep stages
+
+```python
+# Input models
+class AccelerometerReading(BaseModel):
+    timestamp: datetime
+    x: float = Field(ge=-20, le=20)  # g-force limits
+    y: float = Field(ge=-20, le=20)
+    z: float = Field(ge=-20, le=20)
+
+class AudioReading(BaseModel):
+    timestamp: datetime
+    amplitude: float = Field(ge=0, le=1)
+    frequency_bands: List[float] = Field(min_items=8, max_items=8)
+
+class SleepAnalysisRequest(BaseModel):
+    user_id: str
+    recording_start: datetime
+    recording_end: datetime
+    accelerometer_data: List[AccelerometerReading]
+    audio_data: List[AudioReading]
+    
+    @validator('recording_end')
+    def validate_recording_duration(cls, v, values):
+        start = values.get('recording_start')
+        if start and (v - start).seconds < 3600:  # Minimum 1 hour
+            raise ValueError('Recording too short for analysis')
+        return v
+
+# Output models
+class SleepStageInterval(BaseModel):
+    start_time: datetime
+    end_time: datetime
+    stage: Literal['Wake', 'N1', 'N2', 'N3', 'REM']
+    confidence: float = Field(ge=0, le=1)
+
+class StageProbabilities(BaseModel):
+    wake: float = Field(ge=0, le=1)
+    n1: float = Field(ge=0, le=1)
+    n2: float = Field(ge=0, le=1)
+    n3: float = Field(ge=0, le=1)
+    rem: float = Field(ge=0, le=1)
+
+class SleepAnalysisResponse(BaseModel):
+    user_id: str
+    analysis_timestamp: datetime
+    total_sleep_time: int  # minutes
+    sleep_efficiency: float
+    stage_intervals: List[SleepStageInterval]
+    stage_probabilities: List[StageProbabilities]
+    summary_statistics: Dict[str, Any]
+```
+
+### Error Handling Patterns
+- Implement specific exceptions for ML pipeline failures
+- Handle sensor data quality issues gracefully
+- Provide meaningful error messages for data validation failures
+
+```python
+class SensorDataError(Exception):
+    pass
+
+class ModelInferenceError(Exception):
+    pass
+
+class DataQualityError(Exception):
+    pass
+
+# Route with proper error handling
+@router.post("/analyze-sleep", response_model=SleepAnalysisResponse)
+async def analyze_sleep_data(
+    request: SleepAnalysisRequest,
+    model_service: ModelService = Depends(get_model_service)
+):
+    # Early validation
+    if not await validate_sensor_data(request.accelerometer_data, request.audio_data):
+        raise HTTPException(400, "Invalid sensor data quality")
+    
+    try:
+        # Preprocessing pipeline
+        processed_data = await preprocess_sensor_data(
+            request.accelerometer_data,
+            request.audio_data
+        )
+        
+        # Model inference
+        stages, probabilities = await model_service.predict_sleep_stages(processed_data)
+        
+        # Post-processing
+        response = await format_sleep_analysis_response(
+            request.user_id,
+            stages,
+            probabilities,
+            request.recording_start
+        )
+        
+        return response
+        
+    except DataQualityError as e:
+        raise HTTPException(422, f"Data quality issue: {str(e)}")
+    except ModelInferenceError as e:
+        raise HTTPException(500, f"Model inference failed: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error in sleep analysis: {str(e)}")
+        raise HTTPException(500, "Internal server error")
+```
+
+### Performance Optimization
+- Use numpy vectorization for sensor data processing
+- Implement data streaming for large time series datasets
+- Cache preprocessing results for identical sensor configurations
+- Use async processing for independent data streams
+
+```python
+# Async processing pattern
+async def process_sensor_streams_concurrently(
+    accelerometer_data: List[AccelerometerReading],
+    audio_data: List[AudioReading]
+) -> Tuple[np.ndarray, np.ndarray]:
+    
+    accel_task = asyncio.create_task(
+        process_accelerometer_features(accelerometer_data)
+    )
+    audio_task = asyncio.create_task(
+        process_audio_features(audio_data)
+    )
+    
+    accel_features, audio_features = await asyncio.gather(
+        accel_task, audio_task
+    )
+    
+    return accel_features, audio_features
+```
+
+### Configuration Management
+```python
+class Settings(BaseSettings):
+    model_path: str = "ml_models/"
+    max_recording_duration: int = 43200  # 12 hours in seconds
+    min_recording_duration: int = 3600   # 1 hour in seconds
+    sensor_sampling_rate: float = 1.0    # Hz
+    stage_interval_seconds: int = 30
+    
+    # Model configuration
+    model_confidence_threshold: float = 0.7
+    enable_model_caching: bool = True
+    
+    class Config:
+        env_file = ".env"
+```
+
+### Testing Guidelines
+- Mock ML model responses for unit tests
+- Test data preprocessing with various sensor data qualities
+- Validate time series edge cases (gaps, irregular sampling)
+- Test sleep stage transition logic
+
+```python
+# Test example
+@pytest.mark.asyncio
+async def test_sleep_stage_prediction():
+    mock_data = generate_mock_sensor_data(duration_hours=8)
+    response = await analyze_sleep_data(mock_data)
+    
+    assert len(response.stage_intervals) > 0
+    assert all(stage.stage in ['Wake', 'N1', 'N2', 'N3', 'REM'] 
+               for stage in response.stage_intervals)
+    assert response.sleep_efficiency <= 1.0
+```
+
+## Key Sleep Analysis Domain Rules
+1. Always validate 30-second stage intervals consistency
+2. Ensure accelerometer data is within realistic g-force ranges
+3. Implement data quality scoring before ML inference
+4. Handle edge cases: short recordings, sensor failures, missing data
+5. Provide confidence scores for all sleep stage predictions
+6. Implement proper time zone handling for sleep data
+7. Cache model artifacts but not user data for privacy
+
+## Dependencies
+- FastAPI with async support
+- Pydantic v2 for data validation
+- XGBoost with GPU support (optional CPU fallback)
+- joblib for model loading
+- numpy for numerical computations
+- asyncio for concurrent processing
+- python-multipart for file uploads (if needed)
+- Optional: redis for caching normalization statistics

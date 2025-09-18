@@ -1,0 +1,19 @@
+{
+  "feat_cols": [
+    "mean_acc_x",
+    "mean_acc_y",
+    "mean_acc_z",
+    "acc_std_total",
+    "acc_energy_total",
+    "audio_z"
+  ],
+  "label_map": {
+    "Wake": 0,
+    "N1": 1,
+    "N2": 2,
+    "N3": 3,
+    "REM": 4
+  },
+  "standardize": "subject_wise zscore",
+  "context": "none (single-epoch)"
+}
