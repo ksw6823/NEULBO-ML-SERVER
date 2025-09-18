@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 import structlog
@@ -68,14 +67,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS 미들웨어 설정
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.allowed_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["*"],
-)
+# Docker 컨테이너 환경에서는 CORS 불필요
 
 # 신뢰할 수 있는 호스트 미들웨어 (보안)
 if not settings.debug:
