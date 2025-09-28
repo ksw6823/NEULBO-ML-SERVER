@@ -48,7 +48,7 @@ def main():
     print("📡 서버에 접속하려면 브라우저에서 다음 주소를 열어주세요:")
     print(f"   - 메인 페이지: http://{settings.host}:{settings.port}")
     print(f"   - API 문서: http://{settings.host}:{settings.port}/docs")
-    print(f"   - 헬스체크: http://{settings.host}:{settings.port}/api/v1/health/check")
+    print(f"   - 헬스체크: http://{settings.host}:{settings.port}/api/ml/health/check")
     print("\n종료하려면 Ctrl+C를 누르세요.")
     print("-" * 50)
     

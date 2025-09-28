@@ -157,19 +157,19 @@ async def log_requests(request: Request, call_next):
 # 라우터 등록
 app.include_router(
     health.router,
-    prefix="/api/v1/health",
+    prefix="/api/ml/health",
     tags=["헬스체크"]
 )
 
 app.include_router(
     sleep_analysis.router,
-    prefix="/api/v1/sleep",
+    prefix="/api/ml/sleep",
     tags=["수면 분석"]
 )
 
 app.include_router(
     llm_feedback.router,
-    prefix="/api/v1/llm",
+    prefix="/api/ml/llm",
     tags=["LLM 피드백"]
 )
 
@@ -182,7 +182,7 @@ async def root():
         "message": "NEULBO ML Server에 오신 것을 환영합니다!",
         "version": settings.app_version,
         "docs": "/docs",
-        "health": "/api/v1/health/check"
+        "health": "/api/ml/health/check"
     }
 
 
