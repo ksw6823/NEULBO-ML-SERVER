@@ -57,7 +57,7 @@ def test_quick_analysis():
     
     try:
         response = requests.post(
-            "http://localhost:8002/api/v1/sleep/analyze",
+            "http://localhost:8002/api/ml/sleep/analyze",
             json=test_request,
             timeout=60
         )
@@ -97,7 +97,7 @@ def test_quick_analysis():
 def test_health():
     """헬스체크 테스트"""
     try:
-        response = requests.get("http://localhost:8002/api/v1/health/check")
+        response = requests.get("http://localhost:8002/api/ml/health/check")
         if response.status_code == 200:
             health = response.json()
             print("✅ 헬스체크 성공")

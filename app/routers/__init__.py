@@ -1,5 +1,5 @@
 """라우터 모듈"""
-from . import health, sleep_analysis
+from . import health, sleep_analysis, llm_feedback
 
-__all__ = ["health", "sleep_analysis"]
+__all__ = ["health", "sleep_analysis", "llm_feedback"]
 

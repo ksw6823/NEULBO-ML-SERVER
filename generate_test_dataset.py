@@ -500,7 +500,7 @@ test_dataset/
 
 ### 개별 파일 테스트
 ```bash
-curl -X POST "http://localhost:8000/api/v1/sleep/analyze" \\
+curl -X POST "http://localhost:8000/api/ml/sleep/analyze" \\
      -H "Content-Type: application/json" \\
      -d @test_dataset/normal_sleeper_1.json
 ```
@@ -520,7 +520,7 @@ for json_file in dataset_dir.glob("*.json"):
         test_data = json.load(f)
     
     response = requests.post(
-        "http://localhost:8000/api/v1/sleep/analyze",
+        "http://localhost:8000/api/ml/sleep/analyze",
         json=test_data
     )
     

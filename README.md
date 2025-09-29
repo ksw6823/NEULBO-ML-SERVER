@@ -95,7 +95,7 @@ python run_server.py
 
 - **메인 페이지**: http://localhost:8000
 - **API 문서**: http://localhost:8000/docs
-- **헬스체크**: http://localhost:8000/api/v1/health/check
+- **헬스체크**: http://localhost:8000/api/ml/health/check
 
 ## 📚 API 사용법
 
@@ -106,7 +106,7 @@ import requests
 from datetime import datetime
 
 # 수면 분석 요청
-response = requests.post("http://localhost:8000/api/v1/sleep/analyze", json={
+response = requests.post("http://localhost:8000/api/ml/sleep/analyze", json={
     "user_id": "user123",
     "recording_start": "2023-12-01T22:00:00",
     "recording_end": "2023-12-02T06:00:00",
@@ -139,7 +139,7 @@ print(f"총 수면 시간: {result['summary_statistics']['total_sleep_time']}분
 ```python
 # 분석 결과 상세 조회
 analysis_id = "your-analysis-id"
-response = requests.get(f"http://localhost:8000/api/v1/sleep/result/{analysis_id}")
+response = requests.get(f"http://localhost:8000/api/ml/sleep/result/{analysis_id}")
 result = response.json()
 
 # 수면 단계별 시간 출력
@@ -227,10 +227,10 @@ pytest --cov=app tests/
 
 주요 엔드포인트:
 
-- `POST /api/v1/sleep/analyze` - 수면 데이터 분석
-- `GET /api/v1/sleep/result/{analysis_id}` - 분석 결과 조회
-- `GET /api/v1/sleep/history/{user_id}` - 사용자 분석 이력
-- `GET /api/v1/health/check` - 시스템 상태 확인
+- `POST /api/ml/sleep/analyze` - 수면 데이터 분석
+- `GET /api/ml/sleep/result/{analysis_id}` - 분석 결과 조회
+- `GET /api/ml/sleep/history/{user_id}` - 사용자 분석 이력
+- `GET /api/ml/health/check` - 시스템 상태 확인
 
 ## 🤝 기여하기
 

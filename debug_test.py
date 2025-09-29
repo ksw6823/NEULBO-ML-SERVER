@@ -47,7 +47,7 @@ def test_with_detailed_error():
     
     try:
         response = requests.post(
-            "http://localhost:8002/api/v1/sleep/analyze",
+            "http://localhost:8002/api/ml/sleep/analyze",
             json=test_request,
             timeout=30
         )

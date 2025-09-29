@@ -190,10 +190,10 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ### 1. **헬스체크**
 ```bash
 # API 서버 상태
-curl http://localhost:8000/api/v1/health/check
+curl http://localhost:8000/api/ml/health/check
 
 # LLM 서비스 상태  
-curl http://localhost:8000/api/v1/llm/health/llm
+curl http://localhost:8000/api/ml/llm/health/llm
 ```
 
 ### 2. **기능 테스트**

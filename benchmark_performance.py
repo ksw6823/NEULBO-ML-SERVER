@@ -80,7 +80,7 @@ class PerformanceBenchmark:
         try:
             request_start = time.time()
             response = requests.post(
-                f"{self.server_url}/api/v1/sleep/analyze",
+                f"{self.server_url}/api/ml/sleep/analyze",
                 json=test_data,
                 timeout=300  # 5분 타임아웃
             )
@@ -287,7 +287,7 @@ def main():
     
     # 서버 상태 확인
     try:
-        response = requests.get("http://localhost:8000/api/v1/health/check", timeout=10)
+        response = requests.get("http://localhost:8000/api/ml/health/check", timeout=10)
         if response.status_code != 200:
             print("❌ 서버가 준비되지 않았습니다.")
             return

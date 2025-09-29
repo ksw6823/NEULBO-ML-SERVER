@@ -24,7 +24,7 @@ class BatchTester:
     def check_server_health(self) -> bool:
         """서버 상태 확인"""
         try:
-            response = requests.get(f"{self.server_url}/api/v1/health/check", timeout=10)
+            response = requests.get(f"{self.server_url}/api/ml/health/check", timeout=10)
             if response.status_code == 200:
                 health = response.json()
                 print(f"✅ 서버 상태: {health['status']}")
@@ -51,7 +51,7 @@ class BatchTester:
             # API 호출
             start_time = time.time()
             response = requests.post(
-                f"{self.server_url}/api/v1/sleep/analyze",
+                f"{self.server_url}/api/ml/sleep/analyze",
                 json={k: v for k, v in test_data.items() 
                       if k not in ['description', 'expected_stages', 'metadata']},
                 timeout=120  # 2분 타임아웃

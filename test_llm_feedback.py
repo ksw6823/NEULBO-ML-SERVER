@@ -15,7 +15,7 @@ def test_llm_feedback():
     # 1. LLM 헬스체크
     print("1. LLM 서비스 상태 확인...")
     try:
-        response = requests.get("http://localhost:8002/api/v1/llm/health/llm")
+        response = requests.get("http://localhost:8002/api/ml/llm/health/llm")
         print(f"   응답 코드: {response.status_code}")
         
         if response.status_code == 200:
@@ -66,7 +66,7 @@ def test_llm_feedback():
         
         try:
             response = requests.post(
-                "http://localhost:8002/api/v1/llm/feedback",
+                "http://localhost:8002/api/ml/llm/feedback",
                 json=req,
                 timeout=60  # LLM 응답을 위해 긴 타임아웃
             )
@@ -99,7 +99,7 @@ def test_llm_feedback():
         print("4. 피드백 기록 조회 테스트...")
         
         try:
-            response = requests.get(f"http://localhost:8002/api/v1/llm/feedback/history/{user_id}")
+            response = requests.get(f"http://localhost:8002/api/ml/llm/feedback/history/{user_id}")
             
             if response.status_code == 200:
                 history = response.json()
@@ -124,7 +124,7 @@ def test_llm_feedback():
         
         feedback_id = feedback_ids[0]
         try:
-            response = requests.get(f"http://localhost:8002/api/v1/llm/feedback/{feedback_id}")
+            response = requests.get(f"http://localhost:8002/api/ml/llm/feedback/{feedback_id}")
             
             if response.status_code == 200:
                 detail = response.json()

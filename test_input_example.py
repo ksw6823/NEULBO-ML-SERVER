@@ -148,7 +148,7 @@ def send_test_request(test_data, server_url="http://localhost:8000"):
         print("🚀 서버에 테스트 요청 전송 중...")
         
         response = requests.post(
-            f"{server_url}/api/v1/sleep/analyze",
+            f"{server_url}/api/ml/sleep/analyze",
             json=test_data,
             timeout=60  # 60초 타임아웃
         )

@@ -13,7 +13,7 @@ app = FastAPI(title="NEULBO ML Server Test", version="1.0.0")
 async def root():
     return {"message": "NEULBO ML Server Test", "status": "running", "timestamp": datetime.utcnow()}
 
-@app.get("/api/v1/health/check")
+@app.get("/api/ml/health/check")
 async def health_check():
     return {
         "status": "healthy",
@@ -23,7 +23,7 @@ async def health_check():
         "model_status": "healthy"
     }
 
-@app.post("/api/v1/sleep/analyze")
+@app.post("/api/ml/sleep/analyze")
 async def analyze_sleep_mock(request: dict):
     """모의 수면 분석 - 더미 응답 반환"""
     

@@ -12,7 +12,7 @@ def test_health_check():
     """헬스체크 테스트"""
     print("🔍 헬스체크 테스트...")
     try:
-        response = requests.get("http://localhost:8000/api/v1/health/check", timeout=10)
+        response = requests.get("http://localhost:8000/api/ml/health/check", timeout=10)
         
         if response.status_code == 200:
             result = response.json()
@@ -88,7 +88,7 @@ def test_simple_analysis():
     try:
         print(f"   📤 {len(test_data['accelerometer_data'])}개 데이터 포인트 전송 중...")
         response = requests.post(
-            "http://localhost:8000/api/v1/sleep/analyze",
+            "http://localhost:8000/api/ml/sleep/analyze",
             json=test_data,
             timeout=60
         )
@@ -132,7 +132,7 @@ def test_result_lookup(analysis_id):
     
     try:
         response = requests.get(
-            f"http://localhost:8000/api/v1/sleep/result/{analysis_id}",
+            f"http://localhost:8000/api/ml/sleep/result/{analysis_id}",
             timeout=10
         )
         
