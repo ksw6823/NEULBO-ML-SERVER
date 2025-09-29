@@ -107,7 +107,7 @@ from datetime import datetime
 
 # 수면 분석 요청
 response = requests.post("http://localhost:8000/api/ml/sleep/analyze", json={
-    "user_id": "user123",
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
     "recording_start": "2023-12-01T22:00:00",
     "recording_end": "2023-12-02T06:00:00",
     "accelerometer_data": [

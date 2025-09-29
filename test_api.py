@@ -35,7 +35,7 @@ def test_simple_analysis():
     
     # 간단한 테스트 데이터 (30분간)
     test_data = {
-        "user_id": "test_user_quick",
+        "user_id": "550e8400-e29b-41d4-a716-446655440001",  # 테스트용 UUID
         "recording_start": "2024-01-15T22:00:00",
         "recording_end": "2024-01-16T06:00:00",  # 8시간으로 변경 (최소 1시간 필요)
         "accelerometer_data": [],

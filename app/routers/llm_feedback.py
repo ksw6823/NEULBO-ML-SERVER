@@ -42,7 +42,7 @@ async def generate_llm_feedback(
                    analysis_id=request.analysis_id)
         
         # 사용자 검증
-        user = db.query(User).filter(User.id == int(request.user_id)).first()
+        user = db.query(User).filter(User.id == request.user_id).first()
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -52,7 +52,7 @@ async def generate_llm_feedback(
         # 수면 분석 데이터 조회
         sleep_analysis = db.query(SleepAnalysis).filter(
             SleepAnalysis.analysis_id == request.analysis_id,
-            SleepAnalysis.user_id == int(request.user_id)
+            SleepAnalysis.user_id == request.user_id
         ).first()
         
         if not sleep_analysis:
@@ -85,7 +85,7 @@ async def generate_llm_feedback(
         # 데이터베이스에 피드백 저장
         llm_feedback = LLMFeedback(
             feedback_id=llm_result["feedback_id"],
-            user_id=int(request.user_id),
+            user_id=request.user_id,
             analysis_id=request.analysis_id,
             user_prompt=request.user_prompt,
             llm_model=llm_result["llm_model"],
@@ -131,7 +131,7 @@ async def generate_llm_feedback(
 
 @router.get("/feedback/history/{user_id}", response_model=List[LLMFeedbackResponse])
 async def get_feedback_history(
-    user_id: str,
+    user_id: uuid.UUID,
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
@@ -140,7 +140,7 @@ async def get_feedback_history(
     """
     try:
         # 사용자 검증
-        user = db.query(User).filter(User.id == int(user_id)).first()
+        user = db.query(User).filter(User.id == user_id).first()
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -149,7 +149,7 @@ async def get_feedback_history(
         
         # 피드백 기록 조회
         feedbacks = db.query(LLMFeedback).filter(
-            LLMFeedback.user_id == int(user_id)
+            LLMFeedback.user_id == user_id
         ).order_by(
             LLMFeedback.created_at.desc()
         ).limit(limit).all()

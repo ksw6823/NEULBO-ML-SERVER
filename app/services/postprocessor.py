@@ -29,7 +29,7 @@ class PostprocessorService:
     async def format_analysis_response(
         self,
         analysis_id: str,
-        user_id: str,
+        user_id: uuid.UUID,
         recording_start: datetime,
         recording_end: datetime,
         predictions: ModelPrediction,
@@ -366,7 +366,7 @@ class PostprocessorService:
             summary_stats = SleepSummaryStatistics(**analysis.summary_statistics)
             
             return SleepAnalysisResponse(
-                user_id=str(analysis.user_id),
+                user_id=analysis.user_id,
                 analysis_id=analysis.analysis_id,
                 analysis_timestamp=analysis.analysis_timestamp,
                 recording_start=analysis.recording_start,

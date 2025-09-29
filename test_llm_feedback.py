@@ -36,7 +36,7 @@ def test_llm_feedback():
     print("2. 기존 수면 분석 데이터 확인...")
     # 이전 테스트에서 생성된 분석 ID 사용
     analysis_id = "1cff1b38-bb33-4d97-873b-18a42171d131"  # 이전 테스트 결과
-    user_id = "1"
+    user_id = "550e8400-e29b-41d4-a716-446655440000"  # 테스트용 UUID
     
     # 3. LLM 피드백 요청
     print("3. LLM 피드백 생성 테스트...")

@@ -171,7 +171,7 @@ async def analyze_sleep_data(
 
 @router.get("/history/{user_id}", response_model=SleepAnalysisHistoryResponse)
 async def get_sleep_analysis_history(
-    user_id: str,
+    user_id: uuid.UUID,
     page: int = Query(1, ge=1, description="페이지 번호"),
     page_size: int = Query(10, ge=1, le=100, description="페이지 크기"),
     db: Session = Depends(get_db)

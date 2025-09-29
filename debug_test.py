@@ -35,7 +35,7 @@ def test_with_detailed_error():
         })
     
     test_request = {
-        "user_id": "1",  # 숫자 문자열로 수정
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",  # UUID 형태로 수정
         "recording_start": start_time.isoformat(),
         "recording_end": end_time.isoformat(),
         "accelerometer_data": accelerometer_data,

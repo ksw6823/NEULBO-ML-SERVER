@@ -119,7 +119,7 @@ def generate_test_input():
     
     # 테스트 요청 데이터 구성
     test_request = {
-        "user_id": "test_user_001",
+        "user_id": "550e8400-e29b-41d4-a716-446655440002",  # 테스트용 UUID
         "recording_start": start_time.isoformat(),
         "recording_end": end_time.isoformat(),
         "accelerometer_data": accelerometer_data,
