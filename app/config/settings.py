@@ -58,10 +58,12 @@ class Settings(BaseSettings):
     # 로깅 설정
     log_level: str = "INFO"
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "case_sensitive": False,
+        "protected_namespaces": ("settings_",)  # model_ 네임스페이스 충돌 해결
+    }
 
 
 # 전역 설정 인스턴스

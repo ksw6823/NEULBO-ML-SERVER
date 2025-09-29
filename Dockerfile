@@ -36,5 +36,6 @@ EXPOSE 8001
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:8001/api/ml/health/check || exit 1
 
-# 서버 실행
+# Python 경로 설정 및 서버 실행
+ENV PYTHONPATH=/app
 CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
